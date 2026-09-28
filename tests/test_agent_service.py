@@ -5,6 +5,7 @@ from typing import Any
 import pytest
 from langchain_core.messages import AIMessage, AIMessageChunk
 
+from resolve_ai.agent.graph import build_agent_graph
 from resolve_ai.agent.service import AgentService
 from resolve_ai.api.schemas import AgentInvokeRequest
 from resolve_ai.rag.schemas import RagSource
@@ -33,6 +34,15 @@ class FakeGraph:
         )
         yield ("messages", (AIMessageChunk(content="hello "), {"langgraph_node": "agent"}))
         yield ("messages", (AIMessageChunk(content="world"), {"langgraph_node": "agent"}))
+        yield (
+            "updates",
+            {"agent": {"messages": [AIMessage(content="hello world")]}},
+        )
+
+
+class InvokeOnlyModel:
+    async def ainvoke(self, messages: list[Any]) -> AIMessage:
+        return AIMessage(content="completed answer")
 
 
 class ConcurrentGraph:
@@ -74,7 +84,20 @@ async def test_agent_service_streams_deltas_and_sources() -> None:
     assert types[0] == "sources"
     assert events[0]["sources"][0]["source"] == "kb"
     assert "delta" in types
+    assert "".join(event["text"] for event in events if event["type"] == "delta") == "hello world"
     assert types[-1] == "done"
+
+
+@pytest.mark.asyncio
+async def test_agent_service_falls_back_to_completed_graph_message() -> None:
+    service = AgentService(build_agent_graph(InvokeOnlyModel()))
+
+    events = [event async for event in service.stream(AgentInvokeRequest(message="hi"))]
+
+    assert events == [
+        {"type": "delta", "text": "completed answer", "node": "agent"},
+        {"type": "done", "thread_id": None},
+    ]
 
 
 @pytest.mark.asyncio

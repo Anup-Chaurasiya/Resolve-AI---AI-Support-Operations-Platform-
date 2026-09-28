@@ -48,6 +48,8 @@ class AgentService:
         async with self._serialize_thread(request.thread_id):
             config = self._config(request.thread_id)
             sources_emitted = False
+            emitted_text = ""
+            final_text_seen = False
             with agent_span("agent.stream", thread_id=request.thread_id):
                 async for mode, chunk in self._graph.astream(
                     initial_state(request.message),
@@ -62,11 +64,22 @@ class AgentService:
                                 "type": "sources",
                                 "sources": [s.model_dump() for s in sources],
                             }
+                        final_text = _extract_answer(chunk)
+                        if final_text:
+                            if not emitted_text:
+                                yield {"type": "delta", "text": final_text, "node": "agent"}
+                            elif final_text.startswith(emitted_text):
+                                remainder = final_text[len(emitted_text) :]
+                                if remainder:
+                                    yield {"type": "delta", "text": remainder, "node": "agent"}
+                            emitted_text = final_text
+                            final_text_seen = True
                     elif mode == "messages":
                         message_chunk, metadata = chunk
-                        if isinstance(message_chunk, AIMessageChunk):
-                            text = str(message_chunk.content)
+                        if isinstance(message_chunk, AIMessageChunk) and not final_text_seen:
+                            text = str(message_chunk.text)
                             if text:
+                                emitted_text += text
                                 yield {
                                     "type": "delta",
                                     "text": text,
@@ -114,6 +127,19 @@ def _extract_sources(update: dict[str, Any]) -> list[RagSource]:
         if candidates:
             return [s for s in candidates if isinstance(s, RagSource)]
     return []
+
+
+def _extract_answer(update: dict[str, Any]) -> str:
+    if not isinstance(update, dict):
+        return ""
+    agent_state = update.get("agent")
+    if not isinstance(agent_state, dict):
+        return ""
+    messages = agent_state.get("messages", [])
+    if not isinstance(messages, list) or not messages:
+        return ""
+    final_message = messages[-1]
+    return str(final_message.text) if isinstance(final_message, AIMessage) else ""
 
 
 @dataclass

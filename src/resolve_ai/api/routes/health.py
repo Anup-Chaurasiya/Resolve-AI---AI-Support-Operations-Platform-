@@ -12,6 +12,11 @@ router = APIRouter()
 logger = structlog.get_logger(__name__)
 
 
+@router.get("/", response_model=HealthResponse, include_in_schema=False)
+async def root() -> HealthResponse:
+    return HealthResponse(status="ok")
+
+
 @router.get("/health/live", response_model=HealthResponse)
 async def live() -> HealthResponse:
     return HealthResponse(status="ok")

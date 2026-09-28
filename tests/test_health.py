@@ -12,9 +12,12 @@ def test_health_endpoints() -> None:
     app.dependency_overrides[get_app_settings] = lambda: Settings(rag_enabled=False)
     client = TestClient(app)
 
+    root = client.get("/")
     live = client.get("/health/live")
     ready = client.get("/health/ready")
 
+    assert root.status_code == 200
+    assert root.json() == {"status": "ok"}
     assert live.status_code == 200
     assert live.json() == {"status": "ok"}
     assert ready.status_code == 200

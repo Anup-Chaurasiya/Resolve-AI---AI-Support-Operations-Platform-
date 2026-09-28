@@ -28,7 +28,7 @@ def test_build_embeddings_serializes_and_caches_initialization(
         return instance
 
     monkeypatch.setattr(vectorstore, "FastEmbedEmbeddings", build)
-    monkeypatch.setattr(vectorstore, "_fastembed_cache_dir", lambda: tmp_path)
+    monkeypatch.setattr(vectorstore, "_fastembed_cache_dir", lambda _: tmp_path)
     settings = Settings()
 
     with ThreadPoolExecutor(max_workers=8) as executor:
@@ -59,7 +59,7 @@ def test_build_embeddings_removes_incomplete_snapshot_and_retries_once(
         return instance
 
     monkeypatch.setattr(vectorstore, "FastEmbedEmbeddings", build)
-    monkeypatch.setattr(vectorstore, "_fastembed_cache_dir", lambda: tmp_path)
+    monkeypatch.setattr(vectorstore, "_fastembed_cache_dir", lambda _: tmp_path)
 
     result = vectorstore.build_embeddings(Settings())
 
@@ -82,9 +82,27 @@ def test_build_embeddings_does_not_retry_unrelated_initialization_error(
         raise RuntimeError("unsupported execution provider")
 
     monkeypatch.setattr(vectorstore, "FastEmbedEmbeddings", build)
-    monkeypatch.setattr(vectorstore, "_fastembed_cache_dir", lambda: tmp_path)
+    monkeypatch.setattr(vectorstore, "_fastembed_cache_dir", lambda _: tmp_path)
 
     with pytest.raises(RuntimeError, match="unsupported execution provider"):
         vectorstore.build_embeddings(Settings())
 
     assert calls == 1
+
+
+def test_fastembed_cache_dir_prefers_complete_bundled_model(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    bundled_cache = tmp_path / "bundled"
+    snapshot = (
+        bundled_cache
+        / "models--qdrant--bge-small-en-v1.5-onnx-q"
+        / "snapshots"
+        / "revision"
+    )
+    snapshot.mkdir(parents=True)
+    (snapshot / "model_optimized.onnx").write_bytes(b"model")
+    monkeypatch.setattr(vectorstore, "_bundled_cache_dir", bundled_cache)
+
+    assert vectorstore._fastembed_cache_dir("BAAI/bge-small-en-v1.5") == bundled_cache

@@ -8,6 +8,7 @@
 .ruff_cache/
 .venv/
 .qdrant/
+src/resolve_ai/rag/_fastembed_cache/
 node_modules/
 __pycache__/
 *.egg-info/

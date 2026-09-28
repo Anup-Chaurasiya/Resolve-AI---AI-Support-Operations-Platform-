@@ -19,9 +19,13 @@ logger = structlog.get_logger(__name__)
 
 _embeddings_lock = Lock()
 _embedding_instances: dict[tuple[str, str], Embeddings] = {}
+_bundled_cache_dir = Path(__file__).resolve().parent / "_fastembed_cache"
 
 
-def _fastembed_cache_dir() -> Path:
+def _fastembed_cache_dir(model_name: str) -> Path:
+    if _model_cache_is_complete(_bundled_cache_dir, model_name):
+        return _bundled_cache_dir
+
     default = Path(tempfile.gettempdir()) / "fastembed_cache"
     return Path(os.environ.get("FASTEMBED_CACHE_PATH", default))
 
@@ -45,14 +49,22 @@ def _model_cache_details(model_name: str) -> tuple[str, str] | None:
     return None
 
 
-def _remove_incomplete_model_cache(cache_dir: Path, model_name: str) -> bool:
-    """Remove only this model's cache when one of its snapshots is incomplete."""
+def _model_cache_dir(cache_dir: Path, model_name: str) -> tuple[Path, str] | None:
     details = _model_cache_details(model_name)
     if details is None:
-        return False
+        return None
 
     hugging_face_repo, model_file = details
     model_cache_dir = cache_dir / f"models--{hugging_face_repo.replace('/', '--')}"
+    return model_cache_dir, model_file
+
+
+def _model_cache_is_complete(cache_dir: Path, model_name: str) -> bool:
+    cache_details = _model_cache_dir(cache_dir, model_name)
+    if cache_details is None:
+        return False
+
+    model_cache_dir, model_file = cache_details
     if not model_cache_dir.exists():
         return False
 
@@ -62,7 +74,17 @@ def _remove_incomplete_model_cache(cache_dir: Path, model_name: str) -> bool:
         if snapshots_dir.is_dir()
         else []
     )
-    if snapshots and all((snapshot / model_file).is_file() for snapshot in snapshots):
+    return bool(snapshots) and all((snapshot / model_file).is_file() for snapshot in snapshots)
+
+
+def _remove_incomplete_model_cache(cache_dir: Path, model_name: str) -> bool:
+    """Remove only this model's cache when one of its snapshots is incomplete."""
+    cache_details = _model_cache_dir(cache_dir, model_name)
+    if cache_details is None:
+        return False
+
+    model_cache_dir, _ = cache_details
+    if not model_cache_dir.exists() or _model_cache_is_complete(cache_dir, model_name):
         return False
 
     shutil.rmtree(model_cache_dir)
@@ -76,7 +98,7 @@ def _remove_incomplete_model_cache(cache_dir: Path, model_name: str) -> bool:
 
 def build_embeddings(settings: Settings) -> Embeddings:
     """Build FastEmbed once per process and repair a partial first download once."""
-    cache_dir = _fastembed_cache_dir()
+    cache_dir = _fastembed_cache_dir(settings.rag_embedding_model_name)
     cache_key = (settings.rag_embedding_model_name, str(cache_dir))
 
     cached = _embedding_instances.get(cache_key)

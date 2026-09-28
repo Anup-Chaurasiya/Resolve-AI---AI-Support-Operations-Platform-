@@ -6,8 +6,8 @@ services:
     env_file:
       - .env
     environment:
-      RESOLVEAI_ENVIRONMENT: local
-      RESOLVEAI_QDRANT_URL: http://qdrant:6333
+      AI_AGENT_ENVIRONMENT: local
+      AI_AGENT_QDRANT_URL: http://qdrant:6333
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/live')"]
       interval: 30s

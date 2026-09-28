@@ -53,11 +53,11 @@ For multiple replicas, replace in-memory state and rate limiting with shared ser
 
 | Setting | Purpose |
 | --- | --- |
-| `RESOLVEAI_MODEL_PROVIDER` | Selects Groq or OpenAI |
-| `RESOLVEAI_AUTH_API_KEYS` | Enables API-key protection |
-| `RESOLVEAI_RATE_LIMIT_*` | Controls request throttling |
-| `RESOLVEAI_RAG_*` | Tunes knowledge ingestion and search |
-| `RESOLVEAI_AGENT_CHECKPOINT_BACKEND` | Selects memory or no checkpointing |
-| `RESOLVEAI_OTEL_*` | Enables tracing and sets the collector |
+| `AI_AGENT_MODEL_PROVIDER` | Selects Groq or OpenAI |
+| `AI_AGENT_AUTH_API_KEYS` | Enables API-key protection |
+| `AI_AGENT_RATE_LIMIT_*` | Controls request throttling |
+| `AI_AGENT_RAG_*` | Tunes knowledge ingestion and search |
+| `AI_AGENT_AGENT_CHECKPOINT_BACKEND` | Selects memory or no checkpointing |
+| `AI_AGENT_OTEL_*` | Enables tracing and sets the collector |
 
 Keep model credentials outside the repository. In production, use TLS, a secrets manager, global rate limiting, and durable conversation storage.

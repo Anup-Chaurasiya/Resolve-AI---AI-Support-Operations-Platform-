@@ -41,19 +41,19 @@ Groq is the default:
 
 ```env
 GROQ_API_KEY=gsk_...
-RESOLVEAI_MODEL_PROVIDER=groq
-RESOLVEAI_MODEL_NAME=llama-3.1-8b-instant
+AI_AGENT_MODEL_PROVIDER=groq
+AI_AGENT_MODEL_NAME=llama-3.1-8b-instant
 ```
 
 To use OpenAI:
 
 ```env
 OPENAI_API_KEY=sk_...
-RESOLVEAI_MODEL_PROVIDER=openai
-RESOLVEAI_MODEL_NAME=gpt-4o-mini
+AI_AGENT_MODEL_PROVIDER=openai
+AI_AGENT_MODEL_NAME=gpt-4o-mini
 ```
 
-All backend settings use the `RESOLVEAI_` prefix. See [.env.example](.env.example) for the complete list.
+All backend settings use the stable `AI_AGENT_` prefix. See [.env.example](.env.example) for the complete list.
 
 ## Add knowledge
 
@@ -73,7 +73,7 @@ curl -X POST http://127.0.0.1:8000/v1/agent/invoke \
   -d '{"message":"How long will my refund take?","thread_id":"demo"}'
 ```
 
-If API keys are configured with `RESOLVEAI_AUTH_API_KEYS`, include `x-api-key` in each `/v1/*` request.
+If API keys are configured with `AI_AGENT_AUTH_API_KEYS`, include `x-api-key` in each `/v1/*` request.
 
 ## Project map
 

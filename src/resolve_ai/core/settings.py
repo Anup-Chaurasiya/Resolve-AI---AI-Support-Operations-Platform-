@@ -8,7 +8,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
-        env_prefix="RESOLVEAI_",
+        env_prefix="AI_AGENT_",
         extra="ignore",
     )
 

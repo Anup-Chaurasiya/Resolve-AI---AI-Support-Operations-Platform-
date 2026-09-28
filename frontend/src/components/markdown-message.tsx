@@ -14,7 +14,7 @@ export function MarkdownMessage({ content }: MarkdownMessageProps) {
       components={{
         a: ({ className, ...props }) => (
           <a
-            className={cn("font-medium text-blue-700 underline underline-offset-2", className)}
+            className={cn("font-medium text-indigo-300 underline decoration-indigo-300/40 underline-offset-2 hover:text-indigo-200", className)}
             target="_blank"
             rel="noreferrer"
             {...props}
@@ -23,7 +23,7 @@ export function MarkdownMessage({ content }: MarkdownMessageProps) {
         code: ({ className, children, ...props }) => (
           <code
             className={cn(
-              "rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-[0.9em] text-zinc-900",
+              "rounded border border-white/10 bg-white/[0.06] px-1.5 py-0.5 font-mono text-[0.9em] text-zinc-200",
               className,
             )}
             {...props}
@@ -34,7 +34,7 @@ export function MarkdownMessage({ content }: MarkdownMessageProps) {
         pre: ({ className, ...props }) => (
           <pre
             className={cn(
-              "my-3 overflow-x-auto rounded-md border border-zinc-200 bg-zinc-950 p-3 text-sm text-zinc-50",
+              "my-3 overflow-x-auto rounded-lg border border-white/10 bg-black/40 p-3 text-sm text-zinc-100",
               className,
             )}
             {...props}
@@ -47,12 +47,12 @@ export function MarkdownMessage({ content }: MarkdownMessageProps) {
         ),
         th: ({ className, ...props }) => (
           <th
-            className={cn("border border-zinc-200 bg-zinc-50 px-2 py-1 font-semibold", className)}
+            className={cn("border border-white/10 bg-white/[0.04] px-2 py-1 font-semibold", className)}
             {...props}
           />
         ),
         td: ({ className, ...props }) => (
-          <td className={cn("border border-zinc-200 px-2 py-1 align-top", className)} {...props} />
+          <td className={cn("border border-white/10 px-2 py-1 align-top", className)} {...props} />
         ),
       }}
     >

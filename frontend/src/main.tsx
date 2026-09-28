@@ -12,7 +12,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <App />
-      <Toaster richColors position="top-right" />
+      <Toaster theme="dark" position="top-right" toastOptions={{ className: "resolve-toast" }} />
     </QueryClientProvider>
   </StrictMode>,
 );

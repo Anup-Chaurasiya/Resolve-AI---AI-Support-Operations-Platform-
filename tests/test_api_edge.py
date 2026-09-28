@@ -5,6 +5,7 @@ so they exercise only the API edge.
 """
 
 from collections.abc import AsyncIterator
+from concurrent.futures import ThreadPoolExecutor
 from typing import Any, Protocol
 
 import pytest
@@ -109,6 +110,43 @@ def test_rate_limit_engages_after_window_exhaustion(make_client: _ClientFactory)
     assert c.status_code == 429
     assert c.headers["retry-after"]
     assert c.json()["title"] == "Too many requests"
+
+
+def test_unauthenticated_client_cannot_rotate_fake_api_keys(
+    make_client: _ClientFactory,
+) -> None:
+    client = make_client(
+        rate_limit_enabled=True, rate_limit_requests=1, rate_limit_window_seconds=60
+    )
+
+    first = client.post(
+        "/v1/agent/invoke",
+        json={"message": "1"},
+        headers={"x-api-key": "fake-key-1"},
+    )
+    limited = client.post(
+        "/v1/agent/invoke",
+        json={"message": "2"},
+        headers={"x-api-key": "fake-key-2"},
+    )
+
+    assert first.status_code == 200
+    assert limited.status_code == 429
+
+
+def test_rate_limit_is_atomic_for_concurrent_requests(make_client: _ClientFactory) -> None:
+    client = make_client(
+        rate_limit_enabled=True, rate_limit_requests=3, rate_limit_window_seconds=60
+    )
+
+    def send(index: int) -> int:
+        return client.post("/v1/agent/invoke", json={"message": str(index)}).status_code
+
+    with ThreadPoolExecutor(max_workers=12) as executor:
+        statuses = list(executor.map(send, range(12)))
+
+    assert statuses.count(200) == 3
+    assert statuses.count(429) == 9
 
 
 def test_cors_preflight_succeeds_without_auth(make_client: _ClientFactory) -> None:

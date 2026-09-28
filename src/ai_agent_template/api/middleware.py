@@ -3,6 +3,9 @@ from __future__ import annotations
 import time
 from collections import defaultdict, deque
 from collections.abc import Awaitable, Callable
+from hashlib import sha256
+from math import ceil
+from secrets import compare_digest
 from threading import Lock
 from uuid import uuid4
 
@@ -68,14 +71,17 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         *,
         max_requests: int,
         window_seconds: int,
+        auth_api_keys: tuple[str, ...] = (),
         exempt_paths: tuple[str, ...] = ("/health/live", "/health/ready"),
     ) -> None:
         super().__init__(app)
         self._max = max_requests
         self._window = window_seconds
+        self._auth_api_keys = auth_api_keys
         self._exempt = exempt_paths
         self._buckets: dict[str, deque[float]] = defaultdict(deque)
         self._lock = Lock()
+        self._next_cleanup = time.monotonic() + window_seconds
 
     async def dispatch(
         self,
@@ -90,11 +96,21 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         now = time.monotonic()
         cutoff = now - self._window
         with self._lock:
+            if now >= self._next_cleanup:
+                self._buckets = defaultdict(
+                    deque,
+                    {
+                        bucket_key: bucket
+                        for bucket_key, bucket in self._buckets.items()
+                        if bucket and bucket[-1] >= cutoff
+                    },
+                )
+                self._next_cleanup = now + self._window
             bucket = self._buckets[key]
             while bucket and bucket[0] < cutoff:
                 bucket.popleft()
             if len(bucket) >= self._max:
-                retry_after = max(1, int(self._window - (now - bucket[0])))
+                retry_after = max(1, ceil(self._window - (now - bucket[0])))
                 return _rate_limited_response(retry_after, self._max, 0)
             bucket.append(now)
             remaining = self._max - len(bucket)
@@ -104,11 +120,12 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         response.headers["x-ratelimit-remaining"] = str(remaining)
         return response
 
-    @staticmethod
-    def _client_key(request: Request) -> str:
+    def _client_key(self, request: Request) -> str:
         api_key = request.headers.get("x-api-key")
-        if api_key:
-            return f"key:{api_key}"
+        # Never let an unauthenticated caller select its own rate-limit bucket.
+        # A supplied key is trusted only when it matches a configured credential.
+        if api_key and any(compare_digest(api_key, allowed) for allowed in self._auth_api_keys):
+            return f"key:{sha256(api_key.encode()).hexdigest()}"
         client = request.client
         return f"ip:{client.host}" if client else "ip:unknown"
 
@@ -160,6 +177,7 @@ def install_middleware(app: FastAPI, settings: Settings) -> None:
             RateLimitMiddleware,
             max_requests=settings.rate_limit_requests,
             window_seconds=settings.rate_limit_window_seconds,
+            auth_api_keys=tuple(settings.auth_api_keys),
         )
     app.add_middleware(BodySizeLimitMiddleware, max_bytes=settings.request_max_body_bytes)
     app.add_middleware(RequestContextMiddleware, header_name=settings.request_id_header)

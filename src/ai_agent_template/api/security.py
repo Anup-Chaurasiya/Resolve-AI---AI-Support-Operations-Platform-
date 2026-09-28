@@ -1,3 +1,4 @@
+from secrets import compare_digest
 from typing import Annotated
 
 from fastapi import Depends, HTTPException, Request, status
@@ -19,7 +20,7 @@ async def require_api_key(
     allowed = settings.auth_api_keys
     if not allowed:
         return
-    if api_key and api_key in allowed:
+    if api_key and any(compare_digest(api_key, candidate) for candidate in allowed):
         request.state.api_key_id = _api_key_label(api_key)
         return
     raise HTTPException(

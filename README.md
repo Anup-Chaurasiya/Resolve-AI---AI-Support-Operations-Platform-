@@ -134,7 +134,9 @@ AI_AGENT_RATE_LIMIT_REQUESTS=60
 AI_AGENT_RATE_LIMIT_WINDOW_SECONDS=60
 ```
 
-When `auth_api_keys` is empty, auth is disabled (template defaults). When populated, every `/v1/*` request must send `x-api-key: <one-of-the-keys>`. Rate limits are enforced per API key (or per client IP when no key is supplied) using an in-process sliding window — fine for single-replica deployments, swap for Redis when you scale out.
+When `auth_api_keys` is empty, auth is disabled (template defaults). When populated, every `/v1/*` request must send `x-api-key: <one-of-the-keys>`. Rate limits are enforced per valid API key; unauthenticated and invalid-key requests are grouped by client IP, so callers cannot bypass the limit by inventing key values. The limiter uses an in-process sliding window — fine for single-replica deployments, but use an ingress or Redis-backed global limiter when you scale out.
+
+Concurrent requests are accepted. Requests using different `thread_id` values run in parallel; requests sharing one `thread_id` are serialized inside each API process to prevent conversation checkpoints from racing.
 
 Each response includes an `x-request-id` header (echoes the inbound one, or generates a UUID), and structured logs include the request id, path, method, status, and duration.
 

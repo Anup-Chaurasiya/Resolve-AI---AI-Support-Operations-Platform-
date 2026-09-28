@@ -15,7 +15,7 @@ Client ─▶ API edge (middleware + auth) ─▶ AgentService ─▶ LangGraph
 Every `/v1/*` request passes through these middleware layers, in order:
 
 1. **CORS** — origins from `AI_AGENT_CORS_ALLOWED_ORIGINS`.
-2. **Rate limit** — sliding-window, in-process. Keyed by `x-api-key` if present, else client IP. `/health/*` is exempt. Returns 429 with `Retry-After`, `X-RateLimit-Limit`, `X-RateLimit-Remaining`. For multi-replica deployments, swap the limiter for a Redis-backed implementation behind the same interface.
+2. **Rate limit** — sliding-window, in-process. Keyed by a configured, valid `x-api-key`; otherwise keyed by client IP. Arbitrary key headers cannot create fresh buckets, and inactive buckets are periodically removed. `/health/*` is exempt. Returns 429 with `Retry-After`, `X-RateLimit-Limit`, `X-RateLimit-Remaining`. For multi-replica deployments, swap the limiter for a Redis-backed implementation behind the same interface.
 3. **Body size** — rejects requests over `AI_AGENT_REQUEST_MAX_BODY_BYTES` with 413.
 4. **Request context** — propagates the inbound request id (or generates a UUID), attaches it to `request.state`, binds it into structured-log context (`structlog.contextvars`), echoes it on the response header, and emits a `request_completed` log line with method, path, status, and duration.
 
@@ -50,6 +50,8 @@ Cache headers (`cache-control: no-cache`, `x-accel-buffering: no`) prevent inter
 
 - `memory` (default) — `InMemorySaver`, keyed by `thread_id`. Lets a client carry conversational state across `/v1/agent/invoke` calls within a single replica.
 - `none` — no checkpointing.
+
+Within one process, `AgentService` serializes invoke and stream operations that use the same `thread_id`, preventing concurrent updates from racing. Different thread IDs remain concurrent. A multi-replica deployment still needs a distributed lock plus a durable checkpointer if the same conversation can reach different replicas.
 
 For durable, multi-replica memory, add a backend (e.g. `langgraph-checkpoint-postgres`) and extend the factory. The graph compiles with persistence only when a checkpointer is supplied.
 

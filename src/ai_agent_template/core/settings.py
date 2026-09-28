@@ -47,10 +47,10 @@ class Settings(BaseSettings):
 
     auth_api_keys: list[str] = Field(default_factory=list)
     rate_limit_enabled: bool = True
-    rate_limit_requests: int = 60
-    rate_limit_window_seconds: int = 60
+    rate_limit_requests: int = Field(default=60, gt=0)
+    rate_limit_window_seconds: int = Field(default=60, gt=0)
     request_id_header: str = "x-request-id"
-    request_max_body_bytes: int = 5 * 1024 * 1024
+    request_max_body_bytes: int = Field(default=5 * 1024 * 1024, gt=0)
 
     agent_checkpoint_backend: Literal["memory", "none"] = "memory"
 

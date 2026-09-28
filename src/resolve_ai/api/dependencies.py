@@ -1,12 +1,12 @@
 from functools import lru_cache
 
-from ai_agent_template.agent.checkpointer import build_checkpointer
-from ai_agent_template.agent.graph import build_agent_graph
-from ai_agent_template.agent.models import build_chat_model
-from ai_agent_template.agent.service import AgentService
-from ai_agent_template.core.settings import Settings, get_settings
-from ai_agent_template.rag.service import EmptyRagRetriever, RagService
-from ai_agent_template.rag.vectorstore import build_vector_store
+from resolve_ai.agent.checkpointer import build_checkpointer
+from resolve_ai.agent.graph import build_agent_graph
+from resolve_ai.agent.models import build_chat_model
+from resolve_ai.agent.service import AgentService
+from resolve_ai.core.settings import Settings, get_settings
+from resolve_ai.rag.service import EmptyRagRetriever, RagService
+from resolve_ai.rag.vectorstore import build_vector_store
 
 
 @lru_cache(maxsize=1)

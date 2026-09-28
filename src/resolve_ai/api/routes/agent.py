@@ -5,9 +5,9 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from fastapi.responses import StreamingResponse
 
-from ai_agent_template.agent.service import AgentService
-from ai_agent_template.api.dependencies import get_agent_service
-from ai_agent_template.api.schemas import AgentInvokeRequest, AgentInvokeResponse
+from resolve_ai.agent.service import AgentService
+from resolve_ai.api.dependencies import get_agent_service
+from resolve_ai.api.schemas import AgentInvokeRequest, AgentInvokeResponse
 
 router = APIRouter()
 AgentServiceDependency = Annotated[AgentService, Depends(get_agent_service)]

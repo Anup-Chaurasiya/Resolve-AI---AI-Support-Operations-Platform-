@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from ai_agent_template.api.app import create_app
+from resolve_ai.api.app import create_app
 
 
 def test_health_endpoints() -> None:

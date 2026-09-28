@@ -11,11 +11,11 @@ from typing import Any, Protocol
 import pytest
 from fastapi.testclient import TestClient
 
-import ai_agent_template.core.settings as settings_module
-from ai_agent_template.api.app import create_app
-from ai_agent_template.api.dependencies import get_agent_service, get_app_settings
-from ai_agent_template.api.schemas import AgentInvokeRequest, AgentInvokeResponse
-from ai_agent_template.core.settings import Settings
+import resolve_ai.core.settings as settings_module
+from resolve_ai.api.app import create_app
+from resolve_ai.api.dependencies import get_agent_service, get_app_settings
+from resolve_ai.api.schemas import AgentInvokeRequest, AgentInvokeResponse
+from resolve_ai.core.settings import Settings
 
 
 class _ClientFactory(Protocol):

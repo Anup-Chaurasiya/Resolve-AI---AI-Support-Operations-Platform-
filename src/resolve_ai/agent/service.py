@@ -7,10 +7,10 @@ from typing import Any, cast
 
 from langchain_core.messages import AIMessage, AIMessageChunk
 
-from ai_agent_template.agent.graph import initial_state
-from ai_agent_template.api.schemas import AgentInvokeRequest, AgentInvokeResponse
-from ai_agent_template.observability.tracing import agent_span
-from ai_agent_template.rag.schemas import RagSource
+from resolve_ai.agent.graph import initial_state
+from resolve_ai.api.schemas import AgentInvokeRequest, AgentInvokeResponse
+from resolve_ai.observability.tracing import agent_span
+from resolve_ai.rag.schemas import RagSource
 
 # `Any` because LangGraph's CompiledStateGraph has overloaded `astream` signatures
 # that no narrow Protocol can match. The service treats it as a runnable with

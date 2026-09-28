@@ -1,12 +1,12 @@
 [project]
-name = "ai-agent-template"
+name = "resolveai"
 version = "0.1.0"
-description = "Opinionated production-grade scaffold for FastAPI, LangChain, and LangGraph AI agents."
+description = "AI support operations platform for grounded, observable customer support workflows."
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "MIT" }
-authors = [{ name = "AI Agent Template Contributors" }]
-keywords = ["ai-agent", "fastapi", "langchain", "langgraph", "llm", "agents"]
+authors = [{ name = "ResolveAI Contributors" }]
+keywords = ["resolveai", "customer-support", "fastapi", "langchain", "langgraph", "llm"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Framework :: FastAPI",
@@ -59,8 +59,8 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/your-org/ai-agent-template"
-Issues = "https://github.com/your-org/ai-agent-template/issues"
+Homepage = "https://github.com/Anup-Chaurasiya/Resolve-AI---AI-Support-Operations-Platform-"
+Issues = "https://github.com/Anup-Chaurasiya/Resolve-AI---AI-Support-Operations-Platform-/issues"
 
 [tool.uv]
 package = true
@@ -87,10 +87,10 @@ warn_unused_configs = true
 plugins = ["pydantic.mypy"]
 
 [tool.pytest.ini_options]
-addopts = "-q --cov=ai_agent_template --cov-report=term-missing"
+addopts = "-q --cov=resolve_ai --cov-report=term-missing"
 asyncio_mode = "auto"
 testpaths = ["tests"]
 
 [tool.coverage.run]
 branch = true
-source = ["ai_agent_template"]
+source = ["resolve_ai"]

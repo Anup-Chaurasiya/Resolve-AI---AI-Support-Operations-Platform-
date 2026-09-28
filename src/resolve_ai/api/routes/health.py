@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from ai_agent_template.api.schemas import HealthResponse
+from resolve_ai.api.schemas import HealthResponse
 
 router = APIRouter()
 

@@ -4,13 +4,13 @@ from contextlib import asynccontextmanager
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from ai_agent_template.api.errors import register_exception_handlers
-from ai_agent_template.api.middleware import install_middleware
-from ai_agent_template.api.routes import agent, health, rag
-from ai_agent_template.api.security import require_api_key
-from ai_agent_template.core import settings as settings_module
-from ai_agent_template.core.logging import configure_logging
-from ai_agent_template.observability.tracing import configure_tracing
+from resolve_ai.api.errors import register_exception_handlers
+from resolve_ai.api.middleware import install_middleware
+from resolve_ai.api.routes import agent, health, rag
+from resolve_ai.api.security import require_api_key
+from resolve_ai.core import settings as settings_module
+from resolve_ai.core.logging import configure_logging
+from resolve_ai.observability.tracing import configure_tracing
 
 
 @asynccontextmanager

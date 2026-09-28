@@ -6,9 +6,9 @@ from typing import Any, Literal, Protocol
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-from ai_agent_template.core.settings import Settings
-from ai_agent_template.observability.tracing import agent_span
-from ai_agent_template.rag.schemas import RagIngestResponse, RagSource
+from resolve_ai.core.settings import Settings
+from resolve_ai.observability.tracing import agent_span
+from resolve_ai.rag.schemas import RagIngestResponse, RagSource
 
 DocumentType = Literal["knowledge", "voice_sample"]
 _NAMESPACE = uuid.UUID("0d2bd8a4-7f4a-4e8c-9f2c-9b9b7c8a1c11")

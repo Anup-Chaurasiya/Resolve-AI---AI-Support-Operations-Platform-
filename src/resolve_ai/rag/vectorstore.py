@@ -4,7 +4,7 @@ from langchain_qdrant import QdrantVectorStore, RetrievalMode
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import Distance, VectorParams
 
-from ai_agent_template.core.settings import Settings
+from resolve_ai.core.settings import Settings
 
 
 def build_embeddings(settings: Settings) -> Embeddings:

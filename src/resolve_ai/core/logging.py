@@ -3,7 +3,7 @@ import sys
 
 import structlog
 
-from ai_agent_template.core.settings import Settings
+from resolve_ai.core.settings import Settings
 
 
 def configure_logging(settings: Settings) -> None:

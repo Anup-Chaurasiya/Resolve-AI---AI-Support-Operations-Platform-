@@ -2,9 +2,9 @@ from collections.abc import Sequence
 
 from langchain_core.documents import Document
 
-from ai_agent_template.core.settings import Settings
-from ai_agent_template.rag.schemas import RagSource
-from ai_agent_template.rag.service import RagService
+from resolve_ai.core.settings import Settings
+from resolve_ai.rag.schemas import RagSource
+from resolve_ai.rag.service import RagService
 
 
 class FakeVectorStore:

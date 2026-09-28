@@ -15,7 +15,7 @@ from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.types import ASGIApp
 
-from ai_agent_template.core.settings import Settings
+from resolve_ai.core.settings import Settings
 
 logger = structlog.get_logger(__name__)
 
@@ -134,7 +134,7 @@ def _rate_limited_response(retry_after: int, limit: int, remaining: int) -> JSON
     return JSONResponse(
         status_code=status.HTTP_429_TOO_MANY_REQUESTS,
         content={
-            "type": "https://errors.ai-agent-template/rate-limited",
+            "type": "urn:resolveai:error:rate-limited",
             "title": "Too many requests",
             "status": 429,
             "detail": "Rate limit exceeded. Try again later.",

@@ -59,7 +59,7 @@ def register_exception_handlers(app: FastAPI) -> None:
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             title="Validation failed",
             detail="One or more request fields are invalid.",
-            type_="https://errors.ai-agent-template/validation",
+            type_="urn:resolveai:error:validation",
             errors=[dict(error) for error in exc.errors()],
         )
 

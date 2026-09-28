@@ -13,7 +13,7 @@ from typing import Any
 from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.checkpoint.memory import InMemorySaver
 
-from ai_agent_template.core.settings import Settings
+from resolve_ai.core.settings import Settings
 
 
 def build_checkpointer(settings: Settings) -> BaseCheckpointSaver[Any] | None:

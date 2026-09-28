@@ -4,8 +4,8 @@ from typing import Annotated
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import APIKeyHeader
 
-from ai_agent_template.api.dependencies import get_app_settings
-from ai_agent_template.core.settings import Settings
+from resolve_ai.api.dependencies import get_app_settings
+from resolve_ai.core.settings import Settings
 
 API_KEY_HEADER = "x-api-key"
 

@@ -23,9 +23,9 @@ from typing import Any
 
 from langchain_core.messages import AIMessage
 
-from ai_agent_template.agent.graph import build_agent_graph
-from ai_agent_template.agent.service import AgentService
-from ai_agent_template.api.schemas import AgentInvokeRequest
+from resolve_ai.agent.graph import build_agent_graph
+from resolve_ai.agent.service import AgentService
+from resolve_ai.api.schemas import AgentInvokeRequest
 
 GOLDEN = Path(__file__).parent / "golden.jsonl"
 
@@ -104,8 +104,8 @@ async def _run(service: AgentService, cases: Iterable[EvalCase]) -> int:
 def _build_service(offline: bool) -> AgentService:
     if offline:
         return AgentService(_StubGraph())
-    from ai_agent_template.agent.models import build_chat_model
-    from ai_agent_template.core.settings import get_settings
+    from resolve_ai.agent.models import build_chat_model
+    from resolve_ai.core.settings import get_settings
 
     settings = get_settings()
     model = build_chat_model(settings)

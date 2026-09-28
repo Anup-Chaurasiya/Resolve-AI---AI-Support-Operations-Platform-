@@ -25,7 +25,7 @@ eval-offline:
 check: lint typecheck test
 
 run:
-	uv run fastapi dev src/ai_agent_template/main.py
+	uv run fastapi dev src/resolve_ai/main.py
 
 up:
 	docker compose up --build
@@ -43,7 +43,7 @@ frontend-build:
 	cd frontend && npm run build
 
 docker-build:
-	docker build -t ai-agent-template:local .
+	docker build -t resolveai:local .
 
 clean:
 	rm -rf .coverage .mypy_cache .pytest_cache .ruff_cache htmlcov dist \

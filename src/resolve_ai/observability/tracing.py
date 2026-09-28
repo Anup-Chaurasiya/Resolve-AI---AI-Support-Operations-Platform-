@@ -10,7 +10,7 @@ from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
-from ai_agent_template.core.settings import Settings
+from resolve_ai.core.settings import Settings
 
 
 def configure_tracing(app: FastAPI, settings: Settings) -> None:
@@ -24,7 +24,7 @@ def configure_tracing(app: FastAPI, settings: Settings) -> None:
     FastAPIInstrumentor.instrument_app(app)
 
 
-def get_tracer(name: str = "ai_agent_template") -> trace.Tracer:
+def get_tracer(name: str = "resolve_ai") -> trace.Tracer:
     return trace.get_tracer(name)
 
 

@@ -14,4 +14,4 @@ RUN uv sync --no-dev --no-install-project && uv sync --no-dev
 
 EXPOSE 8000
 
-CMD ["uv", "run", "fastapi", "run", "src/ai_agent_template/main.py", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uv", "run", "fastapi", "run", "src/resolve_ai/main.py", "--host", "0.0.0.0", "--port", "8000"]

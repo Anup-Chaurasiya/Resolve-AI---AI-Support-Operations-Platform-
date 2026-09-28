@@ -8,12 +8,12 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
-        env_prefix="AI_AGENT_",
+        env_prefix="RESOLVEAI_",
         extra="ignore",
     )
 
     environment: Literal["local", "test", "staging", "production"] = "local"
-    service_name: str = "ai-agent-template"
+    service_name: str = "ResolveAI API"
     log_level: str = "INFO"
     cors_allowed_origins: list[str] = [
         "http://localhost:5173",
@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     model_max_retries: int = 2
 
     rag_enabled: bool = True
-    rag_collection_name: str = "agent_knowledge"
+    rag_collection_name: str = "resolveai_knowledge"
     rag_top_k: int = 4
     rag_voice_top_k: int = 4
     rag_score_threshold: float | None = None

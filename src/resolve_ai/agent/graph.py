@@ -6,11 +6,13 @@ from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 
-from ai_agent_template.agent.state import AgentState
-from ai_agent_template.rag.service import EmptyRagRetriever, RagRetriever
+from resolve_ai.agent.state import AgentState
+from resolve_ai.rag.service import EmptyRagRetriever, RagRetriever
 
-SYSTEM_PROMPT = """You are a production AI agent.
-Be concise, truthful, and practical. Ask for missing information when needed.
+SYSTEM_PROMPT = """You are ResolveAI, an AI support operations copilot.
+Help support teams investigate issues, draft accurate replies, and turn scattered knowledge
+into clear next actions.
+Be concise, calm, truthful, and practical. Ask for missing information when needed.
 When retrieval context is provided:
 - Ground your answer in that context.
 - Cite only the exact source labels shown in square brackets.

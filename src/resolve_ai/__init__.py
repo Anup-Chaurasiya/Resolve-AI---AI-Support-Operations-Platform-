@@ -1,4 +1,4 @@
-"""Production-grade AI agent scaffold."""
+"""ResolveAI support operations platform."""
 
 __all__ = ["__version__"]
 

@@ -5,9 +5,9 @@ from typing import Any
 import pytest
 from langchain_core.messages import AIMessage, AIMessageChunk
 
-from ai_agent_template.agent.service import AgentService
-from ai_agent_template.api.schemas import AgentInvokeRequest
-from ai_agent_template.rag.schemas import RagSource
+from resolve_ai.agent.service import AgentService
+from resolve_ai.api.schemas import AgentInvokeRequest
+from resolve_ai.rag.schemas import RagSource
 
 
 class FakeGraph:

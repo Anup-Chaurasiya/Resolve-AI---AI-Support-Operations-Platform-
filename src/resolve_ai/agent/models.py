@@ -2,7 +2,7 @@ from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_groq import ChatGroq
 from langchain_openai import ChatOpenAI
 
-from ai_agent_template.core.settings import Settings
+from resolve_ai.core.settings import Settings
 
 
 def build_chat_model(settings: Settings) -> BaseChatModel:

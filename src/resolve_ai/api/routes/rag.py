@@ -2,10 +2,10 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 
-from ai_agent_template.api.dependencies import get_rag_service
-from ai_agent_template.rag.loaders import load_upload_text
-from ai_agent_template.rag.schemas import RagIngestRequest, RagIngestResponse, RagSearchResponse
-from ai_agent_template.rag.service import RagService
+from resolve_ai.api.dependencies import get_rag_service
+from resolve_ai.rag.loaders import load_upload_text
+from resolve_ai.rag.schemas import RagIngestRequest, RagIngestResponse, RagSearchResponse
+from resolve_ai.rag.service import RagService
 
 router = APIRouter()
 RagServiceDependency = Annotated[RagService, Depends(get_rag_service)]

@@ -49,10 +49,10 @@ type KnowledgeDocument = {
 const supportedFileTypes = ".txt,.md,.markdown,.json,.pdf";
 
 const examples = [
-  "Create a production launch checklist for this agent.",
-  "What observability should I add before going live?",
-  "Design a tool-calling roadmap for a SaaS support agent.",
-  "Humanize this draft in my voice: Dear customer, your request has been processed successfully.",
+  "Summarize the likely cause of this customer issue.",
+  "Draft a calm reply for an escalated support ticket.",
+  "Turn this incident into a support-team action plan.",
+  "Rewrite this in my voice: Your request has been processed successfully.",
 ];
 
 function createId() {
@@ -645,7 +645,7 @@ export default function App() {
 
   async function copyTranscript() {
     const transcript = messages
-      .map((message) => `${message.role === "user" ? "User" : "Agent"}: ${message.content}`)
+      .map((message) => `${message.role === "user" ? "User" : "ResolveAI"}: ${message.content}`)
       .join("\n\n");
     await navigator.clipboard.writeText(transcript);
     toast.success("Transcript copied");

@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 
-from ai_agent_template.rag.schemas import RagSource
+from resolve_ai.rag.schemas import RagSource
 
 
 class AgentInvokeRequest(BaseModel):

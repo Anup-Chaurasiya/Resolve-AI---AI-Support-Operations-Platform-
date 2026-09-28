@@ -9,7 +9,7 @@ resolution-markers = [
 ]
 
 [[package]]
-name = "ai-agent-template"
+name = "resolveai"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
